@@ -1544,5 +1544,144 @@ document.fonts&&document.fonts.ready.then(()=>{setKnob(bE);setupPin();onScroll()
 addEventListener('load',()=>{setupPin();sizeHoles();onScroll()});
 })();
 </script>
+<!-- ASK MARIAM: a small assistant that answers from the site's own content -->
+<style>
+.ask-fab{position:fixed;right:var(--gutter);bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:140;display:inline-flex;align-items:center;gap:10px;padding:12px 18px 12px 12px;border:1px solid var(--scarlet);border-radius:999px;background:var(--deep);color:var(--celluloid);font:500 12px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;box-shadow:0 18px 40px -16px rgba(30,0,3,.8);transition:transform .4s var(--ease),background .3s}
+.ask-fab:hover{transform:translateY(-3px)}
+.ask-fab:focus-visible{outline:2px solid var(--scarlet);outline-offset:3px}
+.ask-fab .ask-ic{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--scarlet);color:var(--ink)}
+.ask-fab .ask-ic svg{width:16px;height:16px}
+.ask-fab.hide{opacity:0;pointer-events:none;transform:translateY(12px)}
+.ask{position:fixed;right:var(--gutter);bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:141;width:min(400px,calc(100vw - 2*var(--gutter)));height:min(620px,calc(100svh - 120px));display:flex;flex-direction:column;background:var(--deep);border:1px solid var(--line);box-shadow:0 30px 70px -20px rgba(20,0,2,.9);opacity:0;visibility:hidden;transform:translateY(16px) scale(.98);transform-origin:bottom right;transition:opacity .35s,transform .45s var(--ease),visibility 0s linear .45s}
+.ask.open{opacity:1;visibility:visible;transform:none;transition:opacity .35s,transform .45s var(--ease),visibility 0s}
+.ask-head{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--line);background:var(--ink)}
+.ask-head .who{display:grid;gap:4px}
+.ask-head b{font:650 20px/1 var(--f-display);color:var(--celluloid)}
+.ask-head b span{font:700 22px/1 var(--f-arabic);color:var(--scarlet);margin-left:8px}
+.ask-head small{font:500 11px/1.2 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.ask-x{all:unset;cursor:pointer;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);color:var(--celluloid);font-size:18px}
+.ask-x:focus-visible{outline:2px solid var(--scarlet)}
+.ask-log{flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain;padding:18px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:88%;padding:11px 14px;font:400 15px/1.5 var(--f-body);border-radius:14px;overflow-wrap:anywhere}
+.msg.bot{align-self:flex-start;background:var(--char);color:var(--body);border-top-left-radius:4px}
+.msg.me{align-self:flex-end;background:var(--scarlet);color:var(--ink);border-top-right-radius:4px}
+.msg a{color:var(--scarlet);font-weight:600}
+.msg .go{all:unset;cursor:pointer;display:inline-block;margin-top:8px;font:500 11px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--scarlet);border-bottom:1px solid currentColor;padding-bottom:2px}
+.typing{align-self:flex-start;display:flex;gap:4px;padding:14px;background:var(--char);border-radius:14px;border-top-left-radius:4px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--dim);animation:tdot 1s infinite ease-in-out}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes tdot{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+.ask-chips{flex:0 0 auto;display:flex;gap:8px;overflow-x:auto;padding:0 18px 12px;scrollbar-width:none}
+.ask-chips::-webkit-scrollbar{display:none}
+.ask-chips button{all:unset;cursor:pointer;flex:0 0 auto;padding:8px 12px;border:1px solid var(--line);border-radius:999px;font:400 13px/1.2 var(--f-body);color:var(--body);white-space:nowrap}
+.ask-chips button:hover,.ask-chips button:focus-visible{border-color:var(--scarlet);color:var(--scarlet)}
+.ask-in{flex:0 0 auto;display:flex;gap:8px;padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--ink)}
+.ask-in input{flex:1 1 auto;min-width:0;padding:12px 14px;border:1px solid var(--line);border-radius:999px;background:var(--deep);color:var(--celluloid);font:400 16px/1.2 var(--f-body)}
+.ask-in input::placeholder{color:var(--dim)}
+.ask-in input:focus{outline:none;border-color:var(--scarlet)}
+.ask-in button{all:unset;cursor:pointer;flex:0 0 auto;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--scarlet);color:var(--ink)}
+.ask-in button svg{width:16px;height:16px}
+.ask-form{display:grid;gap:8px;margin-top:10px}
+.ask-form input,.ask-form textarea{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--deep);color:var(--celluloid);font:400 15px/1.4 var(--f-body);resize:vertical}
+.ask-form textarea{min-height:90px}
+.ask-form input:focus,.ask-form textarea:focus{outline:none;border-color:var(--scarlet)}
+.ask-form button{all:unset;cursor:pointer;text-align:center;padding:12px;border-radius:999px;background:var(--scarlet);color:var(--ink);font:500 12px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase}
+.ask-form .err{color:#ffd6dc;font-size:13px}
+.ask-form .alt{font-size:13px;color:var(--dim)}
+@media (max-width:520px){
+  .ask{right:0;left:0;bottom:0;width:100%;height:min(82svh,640px);border-left:0;border-right:0;border-bottom:0;border-radius:18px 18px 0 0;transform-origin:bottom center}
+  .ask-head{border-radius:18px 18px 0 0}
+  .ask-fab .ask-lbl{display:none}
+  .ask-fab{padding:10px}
+  .ask-fab .ask-ic{width:36px;height:36px}
+}
+@media (prefers-reduced-motion:reduce){.ask,.ask-fab{transition:none}.typing i{animation:none}}
+</style>
+
+<button class="ask-fab" id="askFab" type="button" aria-controls="askPanel" aria-expanded="false">
+  <span class="ask-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8.5 9.5h7M8.5 12.5h4"/></svg></span>
+  <span class="ask-lbl">Ask Mariam</span>
+</button>
+
+<section class="ask" id="askPanel" role="dialog" aria-modal="false" aria-label="Ask Mariam" aria-hidden="true">
+  <div class="ask-head">
+    <div class="who"><b>Ask Mariam<span lang="ar" dir="rtl">مريم</span></b><small>About her work, studies and world</small></div>
+    <button class="ask-x" id="askClose" type="button" aria-label="Close">×</button>
+  </div>
+  <div class="ask-log" id="askLog" aria-live="polite"></div>
+  <div class="ask-chips" id="askChips"></div>
+  <form class="ask-in" id="askForm" autocomplete="off">
+    <input id="askInput" type="text" placeholder="Ask about Mariam…" aria-label="Your question">
+    <button type="submit" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M4 12h12M11 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </form>
+</section>
+
+<script>
+(function(){
+const EMAIL='mariam.abdelaleem@gmail.com', LI='https://www.linkedin.com/in/mariam-abdelaleem-17567b259';
+const KB=[
+ {k:['now','current','currently','job','work','working','siemens','energy','role','position','do'],a:'Mariam is a Working Student in Strategy & Sustainability at Siemens Energy in Berlin, since April 2026. She works on sustainability communications, supports internal sustainability communities, does competitor analysis and benchmarking, and creates content for SharePoint and Viva Engage.',go:['cv','See her CV']},
+ {k:['study','studies','studying','master','masters','degree','university','uni','education','wildau','guc','bachelor','gpa','thesis'],a:'She is doing a Master’s in European Business Management at TH Wildau (since 2025). Before that she studied Management Technology, majoring in Marketing & HR, at the German University in Cairo, graduating with a GPA of 1.8 (Very Good). Her thesis looked at how COVID-19 changed attitudes to online shopping.',go:['cv','See education']},
+ {k:['experience','background','career','worked','marketing','social','media','campaign','campaigns','maybelline','soup','dubai','pinterest','vancouver','canada','agency'],a:'Mariam has a marketing and social media background: Social Media Content Expert at SOUP Marketing Agency in Dubai, Pinterest Manager for Web Designer Depot in Vancouver, and Social Media Specialist at Maybelline New York in Cairo. She has led more than 30 campaigns.',go:['cv','See her experience']},
+ {k:['witchy','hub','jewelry','jewellery','brand','founder','founded','own','business','necklace'],a:'The Witchy Hub is the jewelry brand Mariam founded in Cairo and ran from 2021 to 2025. She handled everything from positioning and campaigns to Meta ads, SEO, collaborations and the visual identity.',go:['jewelry','Open The Witchy Hub']},
+ {k:['wicked','candle','candles','greek'],a:'Wicked is a candle brand Mariam created, first called The Greek Candle: sculptural candles and styled imagery.',go:['candles','Open Wicked']},
+ {k:['film','films','movie','movies','cinema','lynch','mulholland','favorite','favourite'],a:'Her favorite film is Mulholland Drive by David Lynch. She loves how open his stories are, and that freedom shapes how she likes to create.',go:['films','See the film section']},
+ {k:['music','song','songs','sound','sounds','umm','kulthum','massrieen','mixtape','egypt','cairo'],a:'Mariam grew up around Downtown Cairo. Her mixtape is full of sounds from Egypt, like the call to prayer, street sellers and a felucca on the Nile, plus Umm Kulthum and Al Massrieen.',go:['sounds','Play the mixtape']},
+ {k:['photo','photos','photography','pictures','camera','berlin'],a:'Her photography is a personal diary of Egypt and Berlin, the two cities she calls home.',go:['photography','Open the photos']},
+ {k:['style','styling','fashion','looks','outfit'],a:'Styling is one of her creative outlets: silhouettes, textures and jewelry details.',go:['styling','See the looks']},
+ {k:['language','languages','speak','arabic','english','french','german','deutsch'],a:'Arabic is her native language and her English is fluent. She speaks French at an intermediate level and is learning German.'},
+ {k:['skill','skills','good','strengths','tools','powerpoint','canva','strategy','communication'],a:'Her strengths are strategic and internal communication, social media strategy, campaign management, analytics and visual storytelling. Tools she uses: PowerPoint, Teams, SharePoint, Outlook, OneDrive and Canva.'},
+ {k:['where','based','live','location','from','city'],a:'Mariam is based in Berlin and originally from Cairo, Egypt.'},
+ {k:['hire','hiring','job','open','available','opportunity','opportunities','internship','collaborate','collaboration','freelance','work with'],a:'For roles, projects or collaborations, the best thing is to ask Mariam directly. She’d love to hear from you.',contact:true},
+ {k:['contact','reach','email','mail','message','talk','connect','linkedin','touch','write'],a:'You can leave Mariam a message right here, or connect with her on LinkedIn.',contact:true},
+ {k:['who','about','mariam','yourself','introduce','tell'],a:'Mariam is a creative storyteller between Cairo and Berlin. She studied marketing, built her own jewelry brand, worked on campaigns for global brands, and now works on sustainability strategy at Siemens Energy.'},
+ {k:['hi','hello','hey','salam','hallo'],a:'Hi! Ask me anything about Mariam: her work, studies, brands, or the films and sounds she loves.'},
+ {k:['thanks','thank','thx','merci','shukran'],a:'You’re welcome! If you’d like to reach Mariam, just say “contact”.'}
+];
+const CHIPS=['What does she do now?','What did she study?','Her experience','The Witchy Hub','Favorite film?','Languages','Get in touch'];
+const $=id=>document.getElementById(id);
+const fab=$('askFab'),panel=$('askPanel'),log=$('askLog'),chips=$('askChips'),form=$('askForm'),inp=$('askInput');
+let started=false;
+const norm=t=>t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9؀-ۿ\s]/g,' ');
+function answer(q){const w=norm(q).split(/\s+/).filter(Boolean),text=' '+w.join(' ')+' ';let best=null,score=0;
+  const GEN=new Set(['now','do','work','working','job','about','tell','who','own','from','good','where','live','city','write','talk','mariam','yourself','brand','business','connect','touch','role','position','current','currently','background','career','worked']);
+  KB.forEach(e=>{let s=0;e.k.forEach(k=>{if(k.includes(' ')?text.includes(' '+k+' '):w.includes(k))s+=GEN.has(k)?1:3});if(s>score){score=s;best=e}});
+  return score?best:null}
+function add(html,who){const d=document.createElement('div');d.className='msg '+who;d.innerHTML=html;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
+const esc=t=>t.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function bot(e){const t=document.createElement('div');t.className='typing';t.innerHTML='<i></i><i></i><i></i>';log.appendChild(t);log.scrollTop=log.scrollHeight;
+  setTimeout(()=>{t.remove();
+    if(!e){const d=add('I don’t know that one yet. Want to ask Mariam directly?','bot');d.appendChild(contactBtn());return}
+    const d=add(esc(e.a),'bot');
+    if(e.go){const b=document.createElement('button');b.className='go';b.type='button';b.textContent=e.go[1]+' ›';b.onclick=()=>jump(e.go[0]);d.appendChild(document.createElement('br'));d.appendChild(b)}
+    if(e.contact)showForm(d);
+  },550)}
+function contactBtn(){const b=document.createElement('button');b.className='go';b.type='button';b.textContent='Leave her a message ›';b.onclick=()=>showForm(b.parentElement,true);const w=document.createElement('div');w.appendChild(b);return w}
+function showForm(host,replaceBtn){if(replaceBtn)host.querySelectorAll('.go').forEach(b=>b.remove());
+  const f=document.createElement('form');f.className='ask-form';f.noValidate=true;
+  f.innerHTML='<input name="n" type="text" placeholder="Your name" aria-label="Your name" autocomplete="name"><input name="e" type="email" placeholder="Your email" aria-label="Your email" autocomplete="email"><textarea name="m" placeholder="Your message" aria-label="Your message"></textarea><span class="err" hidden></span><button type="submit">Send to Mariam</button><span class="alt">Or email <b>'+EMAIL+'</b> or <a href="'+LI+'" target="_blank" rel="noopener">LinkedIn</a></span>';
+  host.appendChild(f);log.scrollTop=log.scrollHeight;
+  f.addEventListener('submit',ev=>{ev.preventDefault();const n=f.n.value.trim(),em=f.e.value.trim(),m=f.m.value.trim(),er=f.querySelector('.err');
+    if(!n||!m){er.textContent='Please add your name and a message.';er.hidden=false;return}
+    if(em&&!/^\S+@\S+\.\S+$/.test(em)){er.textContent='That email address doesn’t look complete.';er.hidden=false;return}
+    er.hidden=true;
+    const body=m+'\n\n— '+n+(em?' ('+em+')':'')+'\nSent from your website';
+    location.href='mailto:'+EMAIL+'?subject='+encodeURIComponent('Hello from your website: '+n)+'&body='+encodeURIComponent(body);
+    setTimeout(()=>add('Your email app should open with the message ready to send. If it didn’t, copy your message and send it to <b>'+EMAIL+'</b>.','bot'),400);
+  })}
+function jump(id){close();const host=document.getElementById(id);if(!host)return;
+  const a=document.createElement('a');a.href='#'+id;a.style.display='none';document.body.appendChild(a);a.click();a.remove()}
+function ask(q){if(!q.trim())return;add(esc(q),'me');bot(answer(q))}
+CHIPS.forEach(c=>{const b=document.createElement('button');b.type='button';b.textContent=c;b.onclick=()=>ask(c);chips.appendChild(b)});
+form.addEventListener('submit',e=>{e.preventDefault();const q=inp.value;inp.value='';ask(q)});
+function open(){panel.classList.add('open');panel.setAttribute('aria-hidden','false');fab.classList.add('hide');fab.setAttribute('aria-expanded','true');
+  if(!started){started=true;add('Hi, I’m Mariam’s assistant. Ask me about her work, studies, brands, or the films and sounds she loves. You can also leave her a message.','bot')}
+  setTimeout(()=>inp.focus({preventScroll:true}),250)}
+function close(){panel.classList.remove('open');panel.setAttribute('aria-hidden','true');fab.classList.remove('hide');fab.setAttribute('aria-expanded','false')}
+fab.addEventListener('click',open);$('askClose').addEventListener('click',()=>{close();fab.focus()});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))close()});
+})();
+</script>
+
 </body>
 </html>
