@@ -40,5 +40,8 @@ Arabic (native), English (fluent), French (intermediate), German (basic)
 - Favorite film: Mulholland Drive (David Lynch)
 - "Sounds that move me": field recordings from Egypt, plus music by Umm Kulthum and Al Massrieen
 
+## Website languages
+The portfolio is available in English (default), German and Arabic via the language switch in the header.
+
 ## Contact
 For roles, projects or collaborations, email mariam.abdelaleem@gmail.com or connect on LinkedIn.
