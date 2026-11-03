@@ -8,6 +8,12 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20rx%3D%2714%27%20fill%3D%27%23830008%27/%3E%3Ctext%20x%3D%2732%27%20y%3D%2745%27%20text-anchor%3D%27middle%27%20font-family%3D%27Georgia%2Cserif%27%20font-weight%3D%27700%27%20font-size%3D%2740%27%20fill%3D%27%23F2C26B%27%3EM%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="https://mariam-abdelaleem.github.io/preview.jpg">
 <meta name="theme-color" content="#830008">
+<meta name="author" content="Mariam Abdelaleem">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://mariam-abdelaleem.github.io/">
+<link rel="alternate" type="text/plain" href="https://mariam-abdelaleem.github.io/llms.txt" title="LLM summary">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "Mariam Abdelaleem", "alternateName": "مريم", "url": "https://mariam-abdelaleem.github.io/", "image": "https://mariam-abdelaleem.github.io/preview.jpg", "description": "Creative storyteller between Cairo and Berlin. Working Student in Strategy & Sustainability at Siemens Energy, M.A. student in European Business Management at TH Wildau, founder of the jewelry brand The Witchy Hub.", "jobTitle": "Working Student, Strategy & Sustainability", "worksFor": {"@type": "Organization", "name": "Siemens Energy"}, "address": {"@type": "PostalAddress", "addressLocality": "Berlin", "addressCountry": "DE"}, "homeLocation": {"@type": "Place", "name": "Berlin, Germany"}, "alumniOf": [{"@type": "CollegeOrUniversity", "name": "German University in Cairo"}, {"@type": "CollegeOrUniversity", "name": "Technische Hochschule Wildau"}], "knowsLanguage": ["Arabic", "English", "French", "German"], "knowsAbout": ["Sustainability communications", "Strategic communication", "Social media strategy", "Campaign management", "Brand strategy", "Visual storytelling", "Photography", "Styling"], "email": "mailto:mariam.abdelaleem@gmail.com", "sameAs": ["https://www.linkedin.com/in/mariam-abdelaleem-17567b259"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Mariam Abdelaleem | The Art of Becoming", "url": "https://mariam-abdelaleem.github.io/", "inLanguage": "en", "author": {"@type": "Person", "name": "Mariam Abdelaleem"}}</script>
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://mariam-abdelaleem.github.io/">
 <meta property="og:site_name" content="Mariam Abdelaleem">
@@ -172,9 +178,20 @@ section[id]{scroll-margin-top:60px}
 @media (max-width:820px){.menu{grid-template-columns:1fr}.menu-peek{display:none}}
 
 /* ---------- Cursor (projector beam) ---------- */
-.cursor{position:fixed;left:0;top:0;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--celluloid);z-index:300;pointer-events:none;transition:width .35s var(--ease),height .35s var(--ease),margin .35s var(--ease);display:grid;place-items:center}
-.cursor span{font:500 10px/1 var(--f-mono);letter-spacing:.16em;color:var(--deep);opacity:0;transition:opacity .2s}
-.cursor.big{width:84px;height:84px;margin:-42px 0 0 -42px}
+.cursor{--c:var(--scarlet);position:fixed;left:0;top:0;width:22px;height:22px;margin:-11px 0 0 -11px;z-index:300;pointer-events:none;display:grid;place-items:center;
+  background-color:transparent;background-repeat:no-repeat;
+  background-image:linear-gradient(var(--c),var(--c)),linear-gradient(var(--c),var(--c)),linear-gradient(var(--c),var(--c)),linear-gradient(var(--c),var(--c)),linear-gradient(var(--c),var(--c)),linear-gradient(var(--c),var(--c)),linear-gradient(var(--c),var(--c)),linear-gradient(var(--c),var(--c));
+  background-size:7px 1.5px,1.5px 7px,7px 1.5px,1.5px 7px,7px 1.5px,1.5px 7px,7px 1.5px,1.5px 7px;
+  background-position:0 0,0 0,100% 0,100% 0,0 100%,0 100%,100% 100%,100% 100%;
+  transition:width .3s var(--ease),height .3s var(--ease),margin .3s var(--ease),background-color .3s,opacity .2s}
+.cursor::after{content:"";position:absolute;left:50%;top:50%;width:3px;height:3px;margin:-1.5px 0 0 -1.5px;border-radius:50%;background:var(--c);transition:opacity .2s}
+.cursor.off{opacity:0}
+html.fine-cursor,html.fine-cursor body,html.fine-cursor a,html.fine-cursor button,html.fine-cursor [role=button],html.fine-cursor label{cursor:none}
+html.fine-cursor input,html.fine-cursor textarea{cursor:text}
+.cursor span{font:500 10px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--c);opacity:0;transition:opacity .2s}
+.cursor.big{width:76px;height:46px;margin:-23px 0 0 -38px;background-color:rgba(40,0,3,.55)}
+.cursor.tap{width:16px;height:16px;margin:-8px 0 0 -8px}
+.cursor.big::after{opacity:0}
 .cursor.big span{opacity:1}
 @media (pointer:coarse),(hover:none){.cursor{display:none}}
 
@@ -1329,9 +1346,13 @@ requestAnimationFrame(grain);
 
 /* ---------- Cursor ---------- */
 const cur=document.querySelector('.cursor'),cl=document.getElementById('cursorLbl');let mx=innerWidth/2,my=innerHeight/2,cx2=mx,cy2=my;
-if(FINE){addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY});
-  (function loop(){cx2+=(mx-cx2)*.2;cy2+=(my-cy2)*.2;cur.style.transform=`translate(${cx2}px,${cy2}px)`;requestAnimationFrame(loop)})();
-  document.addEventListener('pointerover',e=>{const t=e.target.closest('[data-cursor]');if(t){cl.textContent=t.dataset.cursor;cur.classList.add('big')}else cur.classList.remove('big')});}
+if(FINE){document.documentElement.classList.add('fine-cursor');addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;cur.classList.remove('off')});
+  document.addEventListener('mouseleave',()=>cur.classList.add('off'));
+  document.addEventListener('pointerover',e=>{cur.classList.toggle('off',!!e.target.closest('input,textarea'))});
+  (function loop(){cx2+=(mx-cx2)*.45;cy2+=(my-cy2)*.45;cur.style.transform=`translate(${cx2}px,${cy2}px)`;requestAnimationFrame(loop)})();
+  document.addEventListener('pointerover',e=>{const t=e.target.closest('[data-cursor]');const tap=!t&&e.target.closest('a,button,[role=button],summary,label');
+    if(t&&!t.matches('.pill,.btn-plain,a.inline')){cl.textContent=t.dataset.cursor;cur.classList.add('big');cur.classList.remove('tap')}
+    else{cur.classList.remove('big');cur.classList.toggle('tap',!!(tap||t))}});}
 
 /* ---------- Menu ---------- */
 const menu=document.getElementById('menu'),mb=document.getElementById('menuBtn'),peek=document.getElementById('menuPeek');
