@@ -1757,11 +1757,10 @@ new MutationObserver(ms=>{for(const m of ms){if(m.type==='characterData')doText(
   .observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:ATTRS});
 function setLang(l,save){if(!D[l]&&l!=='en')l='en';L=l;const h=document.documentElement;h.lang=l;h.classList.toggle('rtl',l==='ar');
   document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===l));walk(document.body);
-  if(save){try{localStorage.setItem('mariam-lang',l)}catch(e){}}}
+  }
 document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.l,true)));
 walk(document.body);
-let saved=null;try{saved=localStorage.getItem('mariam-lang')}catch(e){}
-if(saved&&saved!=='en')setLang(saved,false);
+try{localStorage.removeItem('mariam-lang')}catch(e){}
 })();
 
 </script>
