@@ -1934,7 +1934,7 @@ function walk(root){if(root.nodeType===3){doText(root);return}if(root.nodeType!=
 new MutationObserver(ms=>{for(const m of ms){if(m.type==='characterData')doText(m.target);else if(m.type==='childList')m.addedNodes.forEach(walk);else doAttr(m.target,m.attributeName)}})
   .observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:ATTRS});
 function setLang(l,save){if(!D[l]&&l!=='en')l='en';L=l;const h=document.documentElement;h.lang=l;h.classList.toggle('rtl',l==='ar');
-  document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===l));walk(document.body);
+  document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===l));document.querySelectorAll('a.priv').forEach(x=>x.setAttribute('href','privacy.html'+(l==='en'?'':'#'+l)));walk(document.body);
   }
 document.querySelectorAll('.lang button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.l,true)));
 walk(document.body);
