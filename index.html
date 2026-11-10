@@ -904,7 +904,7 @@ html.rtl .fc-yt{right:auto;left:10px}
     </svg>
     <div class="leader-num" id="leaderNum"><span class="play-tri" aria-hidden="true"></span></div>
   </div>
-  <div class="leader-skip mono" id="leaderHint"><span>Tap to begin</span><button type="button" class="lh-snd" id="leaderSnd"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3.5" y="14" width="4" height="6" rx="1.5"/><rect x="16.5" y="14" width="4" height="6" rx="1.5"/></svg></span>best with sound</button></div>
+  <div class="leader-skip mono" id="leaderHint"><span>Tap to begin</span></div>
   <div class="titlecard" aria-hidden="true">
     <span class="pres mono">A personal motion picture by</span>
     <span class="tc-en">Mariam</span>
@@ -1529,7 +1529,7 @@ function endLeader(){if(leader.classList.contains('done'))return;leader.classLis
   setTimeout(goHero,RM?0:150);setTimeout(()=>document.body.classList.remove('letterbox'),2600);
   try{sessionStorage.setItem('mariam-leader','1')}catch(e){}}
 let started=false,iv=null,withSound=false;
-document.getElementById('leaderSnd').addEventListener('click',e=>{e.stopPropagation();if(started)return;withSound=true;try{song.prime()}catch(_){}begin()});
+
 function begin(){
   if(started){clearInterval(iv);if(withSound&&!song.isOn()){try{song.fadeIn()}catch(_){}}endLeader();return}  // a second tap skips ahead
   started=true;
